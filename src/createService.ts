@@ -27,25 +27,37 @@ export type ListenerReturnValue<TNext> =
   | (() => ObservableInput<TNext>)
   | ObservableInput<TNext>
   | void;
-export type ResultCreator<T, TConsequence> = (
-  item: T
-) => ListenerReturnValue<TConsequence>;
+
+// export type ResultCreator<T, TConsequence> = (
+//   item: T
+// ) => ListenerReturnValue<TConsequence>;
+
+// export function createServiceT<TBusItem>(
+//   bus: Omnibus<TBusItem>,
+//   handler: (e: TBusItem) => ListenerReturnValue<TBusItem>
+// ): (req: any) => void {
+//   // The base return value
+//   const requestor = (req: any): Action<TBusItem> => {
+//     const action = { type: 'foo', payload: req } as Action<TBusItem>;
+//     return action;
+//     // bus.trigger(action);
+//   };
+//   return requestor;
+// }
+
+export type ExtractPayload<A> = A extends Action<infer T> ? T : never;
 
 export function createService<TRequest, TNext, TError>(
   actionNamespace: string,
-  bus: Omnibus<Action<any>>,
-  handler: ResultCreator<Action<TRequest>, TNext>,
+  bus: Omnibus<Action<TRequest | TNext | TError>>,
+  handler: (e: TRequest) => ListenerReturnValue<TNext>,
   listenMode:
     | 'listen'
     | 'listenQueueing'
     | 'listenSwitching'
     | 'listenBlocking' = 'listen'
-): ((req: TRequest) => void) &
-  ActionCreators<TRequest, TNext, TError> &
-  Stoppable {
+) {
   const namespacedAction = actionCreatorFactory(actionNamespace);
-
-  // Extends our return value, and used internally
   const ACs = {
     requested: namespacedAction<TRequest>('requested'),
     cancel: namespacedAction<void>('cancel'),
@@ -56,9 +68,15 @@ export function createService<TRequest, TNext, TError>(
     canceled: namespacedAction<void>('canceled'),
   };
 
-  const wrappedHandler: ResultCreator<Action<TRequest>, TNext> = (e) => {
-    const oneResult = handler(e);
-    const obsResult: Observable<any> =
+  // The base return value
+  const requestor = (req: TRequest) => {
+    const action = ACs.requested(req);
+    bus.trigger(action);
+  };
+
+  const wrappedHandler = (e: Action<TRequest | TNext | TError>) => {
+    const oneResult = handler(e.payload as TRequest);
+    const obsResult: Observable<TNext> =
       typeof oneResult === 'function'
         ? oneResult.length === 0
           ? defer(oneResult)
@@ -66,7 +84,6 @@ export function createService<TRequest, TNext, TError>(
         : from(oneResult ?? EMPTY);
     return obsResult;
   };
-  // The listener. May get shut off with a bus.reset();
   const sub = bus[listenMode](
     ACs.requested.match,
     wrappedHandler,
@@ -78,12 +95,6 @@ export function createService<TRequest, TNext, TError>(
       unsubscribe: ACs.canceled,
     })
   );
-
-  // The base return value
-  const requestor = (req: TRequest) => {
-    const action = ACs.requested(req);
-    bus.trigger(action);
-  };
 
   // Enhance and return
   const controls: Stoppable = {
@@ -99,30 +110,24 @@ export function createService<TRequest, TNext, TError>(
 
 export function createQueueingService<TRequest, TNext, TError>(
   actionNamespace: string,
-  bus: Omnibus<Action<any>>,
-  handler: (req: Action<TRequest>) => Observable<TNext>
-): ((req: TRequest) => void) &
-  ActionCreators<TRequest, TNext, TError> &
-  Stoppable {
+  bus: Omnibus<Action<TRequest | TNext | TError>>,
+  handler: (e: TRequest) => ListenerReturnValue<TNext>
+) {
   return createService(actionNamespace, bus, handler, 'listenQueueing');
 }
 
 export function createSwitchingService<TRequest, TNext, TError>(
   actionNamespace: string,
-  bus: Omnibus<Action<any>>,
-  handler: (req: Action<TRequest>) => Observable<TNext>
-): ((req: TRequest) => void) &
-  ActionCreators<TRequest, TNext, TError> &
-  Stoppable {
+  bus: Omnibus<Action<TRequest | TNext | TError>>,
+  handler: (e: TRequest) => ListenerReturnValue<TNext>
+) {
   return createService(actionNamespace, bus, handler, 'listenSwitching');
 }
 
 export function createBlockingService<TRequest, TNext, TError>(
   actionNamespace: string,
-  bus: Omnibus<Action<any>>,
-  handler: (req: Action<TRequest>) => Observable<TNext>
-): ((req: TRequest) => void) &
-  ActionCreators<TRequest, TNext, TError> &
-  Stoppable {
+  bus: Omnibus<Action<TRequest | TNext | TError>>,
+  handler: (e: TRequest) => ListenerReturnValue<TNext>
+) {
   return createService(actionNamespace, bus, handler, 'listenBlocking');
 }

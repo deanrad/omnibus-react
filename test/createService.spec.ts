@@ -3,20 +3,18 @@ import {
   createSwitchingService,
   createBlockingService,
   createService,
+  createServiceT,
 } from '../src/createService';
 import { Action } from 'typescript-fsa';
 import { after, Omnibus } from 'omnibus-rxjs';
+import { of } from 'rxjs';
 
 describe('createService', () => {
   const testNamespace = 'testService';
   const bus = new Omnibus<Action<any>>();
-  let testService = createService<string, string, string>(
-    testNamespace,
-    bus,
-    (s) => {
-      console.log(s);
-    }
-  );
+  let testService = createService<string, string, Error>(testNamespace, bus, (s) => {
+    console.log(s);
+  });
   beforeEach(() => {
     bus.reset(); // stops existing services, handlings
   });
@@ -69,8 +67,10 @@ describe('createService', () => {
   });
   it('triggers events from observable handlers when no error', () => {
     const seen = eventsOf(bus);
-    testService = createService<string, string, Error>(testNamespace, bus, () =>
-      after(0, 'bar')
+    testService = createService<string, string, Error>(
+      testNamespace,
+      bus,
+      (e) => after(0, 'bar')
     );
     testService('foo');
     expect(seen).toEqual([
@@ -97,7 +97,7 @@ describe('createService', () => {
     ]);
   });
 
-  it('triggers events from observable handlers, event when they error', () => {
+  it('triggers events from observable handlers, even when they error', () => {
     const seen = eventsOf(bus);
     testService = createService<string, string, string>(
       testNamespace,
