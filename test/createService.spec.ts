@@ -36,7 +36,7 @@ describe('createService', () => {
     });
   });
   describe('return value', () => {
-    describe.only('#isActive', () => {
+    describe('#isActive', () => {
       it('initially is false', () => {
         expect(testService.isActive.value).toBeFalsy();
       });

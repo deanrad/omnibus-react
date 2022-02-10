@@ -6,6 +6,7 @@ import {
   from,
   EMPTY,
   defer,
+  BehaviorSubject,
 } from 'rxjs';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
@@ -49,6 +50,8 @@ export function createService<TRequest, TNext, TError>(
     canceled: namespacedAction<void>('canceled'),
   };
 
+  const isActive = new BehaviorSubject(false);
+
   // The base return value
   const requestor = (req: TRequest) => {
     const action = ACs.requested(req);
@@ -89,7 +92,7 @@ export function createService<TRequest, TNext, TError>(
       return sub;
     },
   };
-  const returnValue = Object.assign(requestor, ACs, controls);
+  const returnValue = Object.assign(requestor, ACs, controls, { isActive });
 
   return returnValue;
 }
