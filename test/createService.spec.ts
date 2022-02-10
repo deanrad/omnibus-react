@@ -64,7 +64,17 @@ describe('createService', () => {
         await after(ASYNC_DELAY);
         expect(asyncService.isActive.value).toBeFalsy();
       });
-      it.todo('emits changes only on requested, completed, error, unsubscribe');
+      it('emits changes only on requested, completed, error, unsubscribe, and when changed', () => {
+        const statuses = [];
+        asyncService.isActive.subscribe((s) => statuses.push(s));
+
+        asyncService();
+        // trigger again
+        asyncService();
+
+        // no double true
+        expect(statuses).toEqual([false, true]);
+      });
       it.todo('terminates on a reset');
     });
     describe('has a property for each actioncreator', () => {
