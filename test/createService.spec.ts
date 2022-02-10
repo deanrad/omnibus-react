@@ -36,8 +36,10 @@ describe('createService', () => {
     });
   });
   describe('return value', () => {
-    describe('#isActive', () => {
-      it.todo('initially is false');
+    describe.only('#isActive', () => {
+      it('initially is false', () => {
+        expect(testService.isActive.value).toBeFalsy();
+      });
       it.todo('becomes true when a handler is in-flight');
       it.todo('may be subscribed to');
       it.todo('terminates on a reset');
