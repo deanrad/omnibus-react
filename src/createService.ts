@@ -7,7 +7,9 @@ import {
   EMPTY,
   defer,
   BehaviorSubject,
+  of,
 } from 'rxjs';
+import { scan, map, distinctUntilChanged } from 'rxjs/operators';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
 interface ActionCreators<TRequest, TNext, TError> {
@@ -28,6 +30,12 @@ type ListenerReturnValue<TNext> =
   | (() => ObservableInput<TNext>)
   | ObservableInput<TNext>
   | void;
+
+export function matchesAny(...acs: ActionCreator<any>[]) {
+  return (e: any) => {
+    return !!acs.find((ac) => ac.match(e));
+  };
+}
 
 export function createService<TRequest, TNext, TError>(
   actionNamespace: string,

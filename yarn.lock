@@ -5719,12 +5719,13 @@ object.pick@^1.3.0:
     isobject "^3.0.1"
 
 omnibus-rxjs@^0.9.7:
-  version "0.9.8"
-  resolved "https://artifacts.werally.in/artifactory/api/npm/npm/omnibus-rxjs/-/omnibus-rxjs-0.9.8.tgz#e8ed2eaa8740cd724b7c12a7e53846abe2da0d2e"
-  integrity sha1-6O0uqodAzXJLfBKn5ThGq+LaDS4=
+  version "0.9.10"
+  resolved "https://artifacts.werally.in/artifactory/api/npm/npm/omnibus-rxjs/-/omnibus-rxjs-0.9.10.tgz#5dd54f18c5ad394712ad7aa0b604e779712d1cf1"
+  integrity sha1-XdVPGMWtOUcSrXqgtgTneXEtHPE=
   dependencies:
     rxjs "^7.3.0"
     tslib "^2.3.1"
+    typescript-fsa "^3.0.0"
 
 once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"

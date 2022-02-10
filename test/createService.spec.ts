@@ -10,12 +10,13 @@ import { Omnibus, after } from 'omnibus-rxjs';
 describe('createService', () => {
   const testNamespace = 'testService';
   const bus = new Omnibus<Action<any>>();
+  const handler = jest.fn((s) => {
+    console.log(s);
+  });
   let testService = createService<string, string, Error>(
     testNamespace,
     bus,
-    (s) => {
-      console.log(s);
-    }
+    handler
   );
   beforeEach(() => {
     bus.reset(); // stops existing services, handlings
@@ -36,12 +37,34 @@ describe('createService', () => {
     });
   });
   describe('return value', () => {
-    describe('#isActive', () => {
-      it('initially is false', () => {
-        expect(testService.isActive.value).toBeFalsy();
+    describe.only('#isActive', () => {
+      let asyncHandler, asyncService;
+      const ASYNC_DELAY = 10;
+
+      beforeEach(() => {
+        asyncHandler = jest.fn(() => {
+          return after(ASYNC_DELAY, '3.14');
+        });
+        asyncService = createService<string, string, Error>(
+          testNamespace,
+          bus,
+          asyncHandler
+        );
       });
-      it.todo('becomes true when a handler is in-flight');
-      it.todo('may be subscribed to');
+
+      it('initially is false', () => {
+        expect(asyncService.isActive.value).toBeFalsy();
+      });
+      it('becomes true when a handler is in-flight', async () => {
+        asyncService();
+
+        expect(asyncHandler).toHaveBeenCalled();
+        expect(asyncService.isActive.value).toBeTruthy();
+
+        await after(ASYNC_DELAY);
+        expect(asyncService.isActive.value).toBeFalsy();
+      });
+      it.todo('emits changes only on requested, completed, error, unsubscribe');
       it.todo('terminates on a reset');
     });
     describe('has a property for each actioncreator', () => {
