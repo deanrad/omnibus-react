@@ -55,6 +55,7 @@ describe('createService', () => {
       it('initially is false', () => {
         expect(asyncService.isActive.value).toBeFalsy();
       });
+
       it('becomes true when a handler is in-flight', async () => {
         asyncService();
 
@@ -64,6 +65,7 @@ describe('createService', () => {
         await after(ASYNC_DELAY);
         expect(asyncService.isActive.value).toBeFalsy();
       });
+
       it('emits changes only on requested, completed, error, unsubscribe, and when changed', () => {
         const statuses = [];
         asyncService.isActive.subscribe((s) => statuses.push(s));
@@ -75,7 +77,31 @@ describe('createService', () => {
         // no double true
         expect(statuses).toEqual([false, true]);
       });
-      it.todo('terminates on a reset');
+
+      it('terminates on a reset', () => {
+        // our stream will close - we'll get no statuses after
+        let didClose = false;
+        asyncService.isActive.subscribe({
+          complete() {
+            didClose = true;
+          },
+        });
+
+        bus.reset();
+        expect(asyncService.isActive.isStopped).toBeTruthy();
+        expect(didClose).toBeTruthy();
+        expect(asyncService.isActive.observers).toHaveLength(0);
+      });
+
+      it('has a final value of false on reset', () => {
+        const statuses = [];
+        asyncService.isActive.subscribe((s) => statuses.push(s));
+
+        asyncService(); // true
+        bus.reset(); // to false
+
+        expect(statuses).toEqual([false, true, false]);
+      });
     });
     describe('has a property for each actioncreator', () => {
       [
