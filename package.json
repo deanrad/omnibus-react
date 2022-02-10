@@ -18,7 +18,7 @@
     "lint:fix": "eslint --ext .ts --fix .",
     "test": "yarn test:fast",
     "test:fast": "jest",
-    "test:watch": "jest --verbose=false --watch",
+    "test:watch": "jest  --watch",
     "test:coverage": "jest --coverage",
     "test:quiet": "jest --silent --reporters=jest-silent-reporter",
     "test:full": "yarn test:fast && yarn test:quiet && echo 'Retest successful' && yarn lint && yarn build",

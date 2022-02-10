@@ -23,7 +23,7 @@ describe('createService', () => {
   describe('arguments', () => {
     describe('bus', () => {
       it.todo('recieves requests');
-      it.todo('recieves consequences');
+      it.todo('recieves observed events');
     });
     describe('actionNamespace', () => {
       it.todo('prefixes action types');
@@ -31,8 +31,17 @@ describe('createService', () => {
     describe('handler', () => {
       it.todo('is called when the bus has service/request events');
     });
+    describe('reducer', () => {
+      it.todo('is called on each event');
+    });
   });
   describe('return value', () => {
+    describe('#isActive', () => {
+      it.todo('initially is false');
+      it.todo('becomes true when a handler is in-flight');
+      it.todo('may be subscribed to');
+      it.todo('terminates on a reset');
+    });
     describe('has a property for each actioncreator', () => {
       [
         'requested',
