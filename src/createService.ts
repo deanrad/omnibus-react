@@ -63,7 +63,8 @@ export function createService<TRequest, TNext, TError>(
     .query(matchesAny(ACs.started, ACs.error, ACs.complete, ACs.canceled))
     .pipe(
       scan((all, e) => all + (ACs.started.match(e) ? 1 : -1), 0),
-      map(Boolean)
+      map(Boolean),
+      distinctUntilChanged()
     )
     .subscribe(isActive);
 
