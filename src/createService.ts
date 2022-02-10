@@ -59,7 +59,7 @@ export function createService<TRequest, TNext, TError>(
   };
 
   const isActive = new BehaviorSubject(false);
-  bus
+  const isActiveSub = bus
     .query(matchesAny(ACs.started, ACs.error, ACs.complete, ACs.canceled))
     .pipe(
       scan((all, e) => all + (ACs.started.match(e) ? 1 : -1), 0),
@@ -106,6 +106,8 @@ export function createService<TRequest, TNext, TError>(
   const controls: Stoppable = {
     stop() {
       sub.unsubscribe();
+      isActiveSub.unsubscribe(); // flow no more values to it
+      isActive.complete(); // make isStopped = true
       return sub;
     },
   };

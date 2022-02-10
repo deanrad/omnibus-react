@@ -93,20 +93,34 @@ describe('createService', () => {
         expect(asyncService.isActive.observers).toHaveLength(0);
       });
 
-      it('has a final value of false on reset', async () => {
+      it('has a final value of false on bus.reset()', async () => {
         const statuses = [];
         asyncService.isActive.subscribe((s) => statuses.push(s));
 
         asyncService(); // true
         bus.reset(); // to false
+        expect(asyncService.isActive.isStopped).toBeTruthy();
+        expect(statuses).toEqual([false, true, false]);
 
         await after(ASYNC_DELAY);
+        expect(statuses).toEqual([false, true, false]);
+      });
+
+      it('has a final value of false on stop()', async () => {
+        const statuses = [];
+        asyncService.isActive.subscribe((s) => statuses.push(s));
+
+        asyncService(); // to true
+        asyncService.stop(); // to false
+        expect(asyncService.isActive.isStopped).toBeTruthy();
+
         expect(statuses).toEqual([false, true, false]);
 
         await after(ASYNC_DELAY);
         expect(statuses).toEqual([false, true, false]);
       });
     });
+
     describe('has a property for each actioncreator', () => {
       [
         'requested',
