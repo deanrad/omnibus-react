@@ -93,13 +93,17 @@ describe('createService', () => {
         expect(asyncService.isActive.observers).toHaveLength(0);
       });
 
-      it('has a final value of false on reset', () => {
+      it('has a final value of false on reset', async () => {
         const statuses = [];
         asyncService.isActive.subscribe((s) => statuses.push(s));
 
         asyncService(); // true
         bus.reset(); // to false
 
+        await after(ASYNC_DELAY);
+        expect(statuses).toEqual([false, true, false]);
+
+        await after(ASYNC_DELAY);
         expect(statuses).toEqual([false, true, false]);
       });
     });

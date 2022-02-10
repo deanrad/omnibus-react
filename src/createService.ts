@@ -9,7 +9,7 @@ import {
   BehaviorSubject,
   of,
 } from 'rxjs';
-import { scan, map, distinctUntilChanged } from 'rxjs/operators';
+import { scan, map, distinctUntilChanged, endWith } from 'rxjs/operators';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
 interface ActionCreators<TRequest, TNext, TError> {
@@ -64,7 +64,8 @@ export function createService<TRequest, TNext, TError>(
     .pipe(
       scan((all, e) => all + (ACs.started.match(e) ? 1 : -1), 0),
       map(Boolean),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      endWith(false)
     )
     .subscribe(isActive);
 
