@@ -59,6 +59,13 @@ export function createService<TRequest, TNext, TError>(
   };
 
   const isActive = new BehaviorSubject(false);
+  bus
+    .query(matchesAny(ACs.started, ACs.error, ACs.complete, ACs.canceled))
+    .pipe(
+      scan((all, e) => all + (ACs.started.match(e) ? 1 : -1), 0),
+      map(Boolean)
+    )
+    .subscribe(isActive);
 
   // The base return value
   const requestor = (req: TRequest) => {
