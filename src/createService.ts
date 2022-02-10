@@ -23,29 +23,10 @@ interface Stoppable {
   stop(): Subscription;
 }
 
-export type ListenerReturnValue<TNext> =
+type ListenerReturnValue<TNext> =
   | (() => ObservableInput<TNext>)
   | ObservableInput<TNext>
   | void;
-
-// export type ResultCreator<T, TConsequence> = (
-//   item: T
-// ) => ListenerReturnValue<TConsequence>;
-
-// export function createServiceT<TBusItem>(
-//   bus: Omnibus<TBusItem>,
-//   handler: (e: TBusItem) => ListenerReturnValue<TBusItem>
-// ): (req: any) => void {
-//   // The base return value
-//   const requestor = (req: any): Action<TBusItem> => {
-//     const action = { type: 'foo', payload: req } as Action<TBusItem>;
-//     return action;
-//     // bus.trigger(action);
-//   };
-//   return requestor;
-// }
-
-export type ExtractPayload<A> = A extends Action<infer T> ? T : never;
 
 export function createService<TRequest, TNext, TError>(
   actionNamespace: string,
@@ -58,7 +39,7 @@ export function createService<TRequest, TNext, TError>(
     | 'listenBlocking' = 'listen'
 ) {
   const namespacedAction = actionCreatorFactory(actionNamespace);
-  const ACs = {
+  const ACs: ActionCreators<TRequest, TNext, TError> = {
     requested: namespacedAction<TRequest>('requested'),
     cancel: namespacedAction<void>('cancel'),
     started: namespacedAction<void>('started'),
@@ -88,10 +69,15 @@ export function createService<TRequest, TNext, TError>(
     ACs.requested.match,
     wrappedHandler,
     bus.observeWith({
+      // @ts-ignore
       next: ACs.next,
+      // @ts-ignore
       error: ACs.error,
+      // @ts-ignore
       complete: ACs.complete,
+      // @ts-ignore
       subscribe: ACs.started,
+      // @ts-ignore
       unsubscribe: ACs.canceled,
     })
   );
