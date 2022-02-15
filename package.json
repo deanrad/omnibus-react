@@ -1,6 +1,6 @@
 {
   "name": "omnibus-react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "author": "Dean Radcliffe",
   "repository": "https://github.com/deanrad/omnibus-react",
@@ -60,6 +60,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@open-wc/building-rollup": "^1.10.0",
     "@phenomnomnominal/tsquery": "^4.1.1",
+    "@reduxjs/toolkit": "^1.7.2",
     "@rollup/plugin-typescript": "^8.2.5",
     "@size-limit/preset-small-lib": "^5.0.3",
     "@testing-library/jest-dom": "^5.15.1",

@@ -9,6 +9,8 @@ import {
   BehaviorSubject,
   of,
 } from 'rxjs';
+import type { ReducerWithInitialState } from '@reduxjs/toolkit/dist/createReducer'
+
 import { scan, map, distinctUntilChanged, endWith } from 'rxjs/operators';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
@@ -37,10 +39,11 @@ export function matchesAny(...acs: ActionCreator<any>[]) {
   };
 }
 
-export function createService<TRequest, TNext, TError>(
+export function createService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
+  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
   listenMode:
     | 'listen'
     | 'listenQueueing'
@@ -48,6 +51,7 @@ export function createService<TRequest, TNext, TError>(
     | 'listenBlocking' = 'listen'
 ) {
   const namespacedAction = actionCreatorFactory(actionNamespace);
+  
   const ACs: ActionCreators<TRequest, TNext, TError> = {
     requested: namespacedAction<TRequest>('requested'),
     cancel: namespacedAction<void>('cancel'),
@@ -68,6 +72,14 @@ export function createService<TRequest, TNext, TError>(
       endWith(false)
     )
     .subscribe(isActive);
+
+  const state = new BehaviorSubject<TState>(reducer.getInitialState ? reducer.getInitialState() : reducer());
+  const stateSub = bus
+    .query(matchesAny(ACs.started, ACs.next, ACs.error, ACs.complete, ACs.canceled))
+    .pipe(
+      scan((all, e) => reducer(all, e), state.value)
+    ).subscribe(state)
+
 
   // The base return value
   const requestor = (req: TRequest) => {
@@ -108,34 +120,41 @@ export function createService<TRequest, TNext, TError>(
       sub.unsubscribe();
       isActiveSub.unsubscribe(); // flow no more values to it
       isActive.complete(); // make isStopped = true
+      stateSub.unsubscribe(); // flow no more values to it
+      state.complete(); // make isStopped = true
       return sub;
     },
   };
-  const returnValue = Object.assign(requestor, ACs, controls, { isActive });
+  const returnValue = Object.assign(requestor, ACs, controls, { isActive, state });
 
   return returnValue;
 }
 
-export function createQueueingService<TRequest, TNext, TError>(
+export function createQueueingService<TRequest, TNext, TError,TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
-  handler: (e: TRequest) => ListenerReturnValue<TNext>
+  handler: (e: TRequest) => ListenerReturnValue<TNext>,
+  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+
 ) {
-  return createService(actionNamespace, bus, handler, 'listenQueueing');
+  return createService(actionNamespace, bus, handler, reducer, 'listenQueueing');
 }
 
-export function createSwitchingService<TRequest, TNext, TError>(
+export function createSwitchingService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
-  handler: (e: TRequest) => ListenerReturnValue<TNext>
+  handler: (e: TRequest) => ListenerReturnValue<TNext>,
+  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+
 ) {
-  return createService(actionNamespace, bus, handler, 'listenSwitching');
+  return createService(actionNamespace, bus, handler, reducer, 'listenSwitching');
 }
 
-export function createBlockingService<TRequest, TNext, TError>(
+export function createBlockingService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
-  handler: (e: TRequest) => ListenerReturnValue<TNext>
+  handler: (e: TRequest) => ListenerReturnValue<TNext>,
+  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
 ) {
-  return createService(actionNamespace, bus, handler, 'listenBlocking');
+  return createService(actionNamespace, bus, handler, reducer, 'listenBlocking');
 }
