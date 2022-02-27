@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Omnibus } from 'omnibus-rxjs';
 import {
   Subscription,
@@ -7,9 +8,8 @@ import {
   EMPTY,
   defer,
   BehaviorSubject,
-  of,
+  
 } from 'rxjs';
-import type { ReducerWithInitialState } from '@reduxjs/toolkit/dist/createReducer'
 
 import { scan, map, distinctUntilChanged, endWith } from 'rxjs/operators';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
@@ -43,7 +43,7 @@ export function createService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
-  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+  reducer: (all: TState, one: Action<any>) => TState = (s, _) => s,
   listenMode:
     | 'listen'
     | 'listenQueueing'
@@ -134,7 +134,7 @@ export function createQueueingService<TRequest, TNext, TError,TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
-  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+  reducer: (all: TState, one: Action<any>) => TState = (s, _) => s,
 
 ) {
   return createService(actionNamespace, bus, handler, reducer, 'listenQueueing');
@@ -144,7 +144,7 @@ export function createSwitchingService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
-  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+  reducer: (all: TState, one: Action<any>) => TState = (s, _) => s,
 
 ) {
   return createService(actionNamespace, bus, handler, reducer, 'listenSwitching');
@@ -154,7 +154,7 @@ export function createBlockingService<TRequest, TNext, TError, TState=object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
-  reducer: (all: TState, one: Action<any>) => TState = (s, e) => s,
+  reducer: (all: TState, one: Action<any>) => TState = (s, _) => s,
 ) {
   return createService(actionNamespace, bus, handler, reducer, 'listenBlocking');
 }

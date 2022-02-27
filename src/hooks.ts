@@ -1,15 +1,23 @@
+import * as React from 'react';
 import { useEffect } from 'react';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 /**
  * Ties a subscription to the lifetime of the component that calls useWhileMounted.
- * Given a subscription-returning function, gets the subscription (thereby starting it)
- * at component mount time, and unsubscribes it at unmount time.
+ * Given a function which is either a useEffect-style callback, or returns an Observable of subscription,
+ * runs/subscribes it at component mount time, and runs the cleanup callback/unsubscribes at unmount time.
  */
-export function useWhileMounted(subsFactory: () => Subscription) {
+export function useWhileMounted(sourceFactory: React.EffectCallback | (() => Subscription) | (() => Observable<any>)) {
   useEffect(() => {
-    const sub = subsFactory();
-    return () => sub?.unsubscribe();
+    const source = sourceFactory()
+    const teardown = (source as Observable<any>).subscribe ? (source as Observable<any>).subscribe() : source
+    return () => {
+      if ((teardown as Subscription).unsubscribe) {
+       (teardown as Subscription).unsubscribe();
+       return; 
+      }
+      (teardown as () => void)?.();
+    }
   }, []);
 }
 
