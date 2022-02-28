@@ -45,7 +45,12 @@ export function createService<TRequest, TNext, TError, TState = object>(
   actionNamespace: string,
   bus: Omnibus<Action<TRequest | TNext | TError>>,
   handler: (e: TRequest) => ListenerReturnValue<TNext>,
-  reducerProducer: () => (all: TState, one: Action<any>) => TState = passThru,
+  reducerProducer: (
+    acs?: ActionCreators<TRequest, TNext, TError>
+  ) => (all: TState, one: Action<any>) => TState = () =>
+    (all: TState) => {
+      return all;
+    },
   listenMode:
     | 'listen'
     | 'listenQueueing'
@@ -75,7 +80,7 @@ export function createService<TRequest, TNext, TError, TState = object>(
     )
     .subscribe(isActive);
 
-  const reducer = reducerProducer();
+  const reducer = reducerProducer(ACs);
   const state = new BehaviorSubject<TState>(
     reducer.getInitialState ? reducer.getInitialState() : reducer()
   );

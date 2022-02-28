@@ -52,9 +52,9 @@ describe('createService', () => {
           number,
           Error,
           InitialState
-        >(testNamespace, bus, handler, () =>
+        >(testNamespace, bus, handler, (ACs) =>
           createReducer(initial, {
-            [testNamespace + '/next']: (all, e) => {
+            [ACs.next.type]: (all, e) => {
               all.constants.push(e.payload);
             },
           })
