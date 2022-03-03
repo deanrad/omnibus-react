@@ -11,7 +11,7 @@ import {
   
 } from 'rxjs';
 
-import { scan, map, distinctUntilChanged, endWith } from 'rxjs/operators';
+import { scan, map, distinctUntilChanged, endWith, takeUntil } from 'rxjs/operators';
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
 interface ActionCreators<TRequest, TNext, TError> {
@@ -95,7 +95,9 @@ export function createService<TRequest, TNext, TError, TState=object>(
           ? defer(oneResult)
           : EMPTY
         : from(oneResult ?? EMPTY);
-    return obsResult;
+    return obsResult.pipe(
+      takeUntil(bus.query(ACs.cancel.match))
+    )
   };
   const sub = bus[listenMode](
     ACs.requested.match,
