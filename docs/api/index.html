@@ -1,0 +1,223 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>omnibus-react</title>
+	<meta name="description" content="Documentation for omnibus-react">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">omnibus-react</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>omnibus-react</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p><a href="https://travis-ci.com/deanrad/omnibus-react"><img src="https://api.travis-ci.com/deanrad/omnibus-react.svg?token=jDxJBxYkkXVxwqfuGjmx&branch=master&status=passed" alt="Travis CI"></a>
+					<img src="https://shields.io/badge/coverage-100%25-brightgreen" alt="Code Coverage">
+				<a href="https://codeclimate.com/github/deanrad/omnibus-react/maintainability"><img src="https://api.codeclimate.com/v1/badges/f7c14c5a3bbbf0d803cc/maintainability" alt="Maintainability"></a></p>
+				<a href="#omnibus-react" id="omnibus-react" style="color: inherit; text-decoration: none;">
+					<h1>omnibus-react</h1>
+				</a>
+				<a href="#what-is-it" id="what-is-it" style="color: inherit; text-decoration: none;">
+					<h2>What Is It?</h2>
+				</a>
+				<p>A way to use the <a href="https://github.com/deanrad/omnibus-rxjs">Omnibus</a> library in a React context.
+				Allows you to:</p>
+				<ul>
+					<li>Avoid prop-drilling by using a bus for inter-component communication.</li>
+					<li>Trigger to the bus, and listen from anywhere in the component tree. No more passing function references that can be the source of over-rendering issues or cluttered code.</li>
+					<li>Lower resource usage by canceling effects automatically on component unmount (when the effects support cancelation by being Observable).</li>
+					<li>Avoid race conditions caused by React not canceling effects as soon as possible.</li>
+				</ul>
+				<a href="#how-to-get-it" id="how-to-get-it" style="color: inherit; text-decoration: none;">
+					<h2>How to Get It?</h2>
+				</a>
+				<p><code>npm install omnibus-react omnibus-rxjs</code></p>
+				<p>Omnibus-react has a peer dependency on <code>omnibus-rxjs</code>.</p>
+				<a href="#how-big-is-it" id="how-big-is-it" style="color: inherit; text-decoration: none;">
+					<h2>How Big Is It?</h2>
+				</a>
+				<p>Including both <code>omnibus-*</code> libs: 10Kb minified, gzipped</p>
+				<a href="#what-front-end-problems-does-it-help-with" id="what-front-end-problems-does-it-help-with" style="color: inherit; text-decoration: none;">
+					<h2>What Front-End problems does it help with?</h2>
+				</a>
+				<ul>
+					<li>Keep components and services testable—since they&#39;re specified only in terms of messages they send or respond to - no mocking required!</li>
+					<li>Don&#39;t need to prop-drill, lift state, or introduce Contexts to do inter-component communication; sharing the bus is sufficient.</li>
+					<li>Code UX to handle all edge-cases around API/service communication, by depending only on the messages. Even if those services aren&#39;t built yet!</li>
+					<li>Keep memory footprint small, and prevent bundle bloat by allowing functionality to load/unload at runtime.</li>
+				</ul>
+				<p>And many more - see How Can I Explain This To My Team.</p>
+				<a href="#usage-with-react" id="usage-with-react" style="color: inherit; text-decoration: none;">
+					<h2>Usage with React</h2>
+				</a>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">useWhileMounted</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;omnibus-react&quot;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">bus</span><span style="color: #000000">, </span><span style="color: #001080">CounterIncrement</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./events/&quot;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">CounterDisplay</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">count</span><span style="color: #000000">, </span><span style="color: #0070C1">setCount</span><span style="color: #000000">] = </span><span style="color: #795E26">useState</span><span style="color: #000000">(</span><span style="color: #098658">0</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #795E26">useWhileMounted</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">bus</span><span style="color: #000000">.</span><span style="color: #795E26">listen</span><span style="color: #000000">(</span><span style="color: #001080">CounterIncrement</span><span style="color: #000000">.</span><span style="color: #001080">match</span><span style="color: #000000">, () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #795E26">setCount</span><span style="color: #000000">(</span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000">+</span><span style="color: #098658">1</span><span style="color: #000000">))</span>
+<span style="color: #000000">    })</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>This example invokes a React state-setter each time an event matching <code>CounterIncrement</code> is trigger-ed onto the bus. <code>bus.listen</code> returns an RxJS <code>Subscription</code> object, and the wrapping of it in <code>useWhileMounted</code> allows the listener to be removed upon component unmounting.</p>
+				<p>In an entirely un-coupled component, anywhere in the app, a component (or test framework) will trigger those actions:</p>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">bus</span><span style="color: #000000">, </span><span style="color: #001080">CounterIncrement</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;./events&#039;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">CounterButton</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> &lt;</span><span style="color: #267F99">button</span><span style="color: #000000"> </span><span style="color: #267F99">onClick</span><span style="color: #000000">={() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #267F99">trigger</span><span style="color: #000000">(</span><span style="color: #267F99">CounterIncrement</span><span style="color: #000000">())}&gt;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>All that&#39;s needed to connect them, is mount each of them - in no particular relation to each other, and sharing no props or state:</p>
+				<pre><code class="language-jsx"><span style="color: #800000">&lt;</span><span style="color: #267F99">App</span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">  </span><span style="color: #800000">&lt;</span><span style="color: #267F99">CounterDisplay</span><span style="color: #000000"> </span><span style="color: #800000">/&gt;</span>
+<span style="color: #000000">  </span><span style="color: #800000">&lt;</span><span style="color: #267F99">CounterButton</span><span style="color: #000000"> </span><span style="color: #800000">/&gt;</span>
+<span style="color: #800000">&lt;/</span><span style="color: #267F99">App</span><span style="color: #800000">&gt;</span>
+</code></pre>
+				<a href="#lifecycle" id="lifecycle" style="color: inherit; text-decoration: none;">
+					<h3>Lifecycle</h3>
+				</a>
+				<p><code>useWhileMounted</code> can ensure your effects do not outlive the components that initiate them. This is a good default, and enabled by returning Observables from handlers always. However, if cancelability is not desired, (such as when a response is still desired) simply return a Promise instead, and Omnibus will be unable to cancel it.</p>
+				<pre><code class="language-ts"><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">useWhileMounted</span><span style="color: #000000">(</span><span style="color: #795E26">subsFactory</span><span style="color: #000000">: () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #267F99">Subscription</span><span style="color: #000000">) {</span>
+<span style="color: #000000">  </span><span style="color: #795E26">useEffect</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">sub</span><span style="color: #000000"> = </span><span style="color: #795E26">subsFactory</span><span style="color: #000000">();</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">return</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">sub</span><span style="color: #000000">?.</span><span style="color: #795E26">unsubscribe</span><span style="color: #000000">();</span>
+<span style="color: #000000">  }, []);</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>The <code>useAllWhileMounted</code> version takes multiple subscription factories and combines them into one, which is canceled on unmount.</p>
+				<a href="#how-can-i-explain-why-we-should-use-this-to-my-team" id="how-can-i-explain-why-we-should-use-this-to-my-team" style="color: inherit; text-decoration: none;">
+					<h1>How Can I Explain Why We Should Use This to My Team?</h1>
+				</a>
+				<p>The main benefits of Omnibus are:</p>
+				<ul>
+					<li>Allows you to architect your application logic around events of interest to your application, not around volatile or error-prone framework-specific APIs.</li>
+					<li>Provides an execution container for typesafe, leak-proof async processes with reliable concurrency options to squash race conditions and prevent resource leaks.</li>
+				</ul>
+				<p>To the first point - framework-specific issues like &quot;prop-drilling&quot; and &quot;referential instability&quot; disappear when an event bus transparently connects components anywhere in the tree through a single, stable bus instance.</p>
+				<p>To the reliability point - just as XState is a predictable, safe, leak-proof state-container, Omnibus is that for async processes, because it uses the &gt;10 year old, tested options of RxJS: Observables and concurrency operators.</p>
+				<p>With Omnibus inside React, you can:</p>
+				<ul>
+					<li>Keep components and services testable—simply specify them in terms of messages they send or respond to, and listen - no mocking required!</li>
+					<li>Prevent the need to prop-drill, lift state, or introduce Contexts to do inter-component communication; sharing the bus is sufficient.</li>
+					<li>Develop UX to handle all edge-cases around API/service communication, even if those services aren&#39;t built yet, by decoupling from them with the event bus!</li>
+					<li>Keep memory footprint small, and prevent bundle bloat by allowing functionality to load/unload at runtime.</li>
+				</ul>
+				<p>You can start with Omnibus with no RxJS logic at all - just handlers returning Promises. Then as you require capabilities that Observables offer—like cancelation— you can change what those handlers return. <em>Leaving the rest of your app unchanged!</em> No <code>async/await</code> is required. And you need not mix several types of async code like: middlewares, async/await, Promise chaining and framework-specific APIs. Just use events and listeners.</p>
+				<p>In short - the kinds of upgrades one must do in web development, such as migrating code from uncancelable to cancelable, from REST endpoint to Web Socket, are made easy with Omnibus. And the UX can be made tight and responsive against any downstream behavior because of its modular, decoupled nature.</p>
+				<a href="#inspirations-references" id="inspirations-references" style="color: inherit; text-decoration: none;">
+					<h1>Inspirations, References</h1>
+				</a>
+				<ul>
+					<li>RxJS</li>
+					<li>Redux-Observable</li>
+					<li>XState</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#BusContext" class="tsd-kind-icon">Bus<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#THRESHOLD" class="tsd-kind-icon">THRESHOLD</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#createBlockingService" class="tsd-kind-icon">create<wbr>Blocking<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#createQueueingService" class="tsd-kind-icon">create<wbr>Queueing<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#createService" class="tsd-kind-icon">create<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#createSwitchingService" class="tsd-kind-icon">create<wbr>Switching<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#matchesAny" class="tsd-kind-icon">matches<wbr>Any</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#useAllWhileMounted" class="tsd-kind-icon">use<wbr>All<wbr>While<wbr>Mounted</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#useBus" class="tsd-kind-icon">use<wbr>Bus</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#useWhileMounted" class="tsd-kind-icon">use<wbr>While<wbr>Mounted</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
