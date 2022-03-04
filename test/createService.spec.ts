@@ -7,7 +7,7 @@ import {
 import { Action } from 'typescript-fsa';
 
 import { Omnibus, after, concat } from 'omnibus-rxjs';
-import { createReducer } from '@reduxjs/toolkit'
+import { createReducer } from '@reduxjs/toolkit';
 
 describe('createService', () => {
   const testNamespace = 'testService';
@@ -41,30 +41,31 @@ describe('createService', () => {
   describe('return value', () => {
     describe('#state', () => {
       const initial = {
-        constants: []
-      }
-      type InitialState = typeof initial
-      const handler = () => concat(after(0, 3.14), after(0, 2.718))
-      const reducer = createReducer(initial, {
-        [testNamespace + '/next']: (all, e) => {
-          all.constants.push(e.payload)
-        }
-      })
+        constants: [],
+      };
+      type InitialState = typeof initial;
+      const handler = () => concat(after(0, 3.14), after(0, 2.718));
 
       it('reduces into .state', () => {
-        const stateService = createService<string | void, number, Error, InitialState>(
-          testNamespace,
-          bus,
-          handler,
-          reducer
+        const stateService = createService<
+          string | void,
+          number,
+          Error,
+          InitialState
+        >(testNamespace, bus, handler, (ACs) =>
+          createReducer(initial, {
+            [ACs.next.type]: (all, e) => {
+              all.constants.push(e.payload);
+            },
+          })
         );
 
-        expect(stateService.state.value).toEqual({  constants: [] })
+        expect(stateService.state.value).toEqual({ constants: [] });
 
-        stateService()
-        expect(stateService.state.value).toEqual({ constants: [3.14, 2.718] })
-      })
-    })
+        stateService();
+        expect(stateService.state.value).toEqual({ constants: [3.14, 2.718] });
+      });
+    });
     describe('#isActive', () => {
       let asyncHandler, asyncService;
       const ASYNC_DELAY = 10;
