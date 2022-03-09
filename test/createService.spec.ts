@@ -95,7 +95,7 @@ describe('createService', () => {
         expect(asyncService.isActive.value).toBeFalsy();
       });
 
-      it('emits changes only on requested, completed, error, unsubscribe, and when changed', () => {
+      it('emits changes only on request, completed, error, unsubscribe, and when changed', () => {
         const statuses = [];
         asyncService.isActive.subscribe((s) => statuses.push(s));
 
@@ -152,7 +152,7 @@ describe('createService', () => {
 
     describe('has a property for each actioncreator', () => {
       [
-        'requested',
+        'request',
         'cancel',
         'started',
         'next',
@@ -180,7 +180,7 @@ describe('createService', () => {
 
       expect(seen).toMatchObject([
         // { type: 'testService/requested', payload: '3' },
-        testService.requested('3'),
+        testService.request('3'),
       ]);
     });
   });
@@ -191,7 +191,7 @@ describe('createService', () => {
     );
     testService('foo');
     expect(seen).toEqual([
-      testService.requested('foo'),
+      testService.request('foo'),
       testService.started(),
       testService.next('bar'),
       testService.complete(),
@@ -207,7 +207,7 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.requested('foo'),
+      testService.request('foo'),
       testService.started(),
       testService.next('bar'),
       testService.complete(),
@@ -226,7 +226,7 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.requested('foo'),
+      testService.request('foo'),
       testService.started(),
       testService.next('bar'),
       testService.complete(),
@@ -242,7 +242,7 @@ describe('createService', () => {
     );
     testService('foo');
     expect(seen).toEqual([
-      testService.requested('foo'),
+      testService.request('foo'),
       testService.started(),
       testService.error(new Error('dang!')),
     ]);
@@ -263,7 +263,7 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.requested('foo'),
+      testService.request('foo'),
       testService.started(),
       testService.next('bar'),
       testService.complete(),

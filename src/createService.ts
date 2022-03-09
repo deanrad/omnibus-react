@@ -15,7 +15,7 @@ import { scan, map, distinctUntilChanged, endWith, takeUntil } from 'rxjs/operat
 import { Action, ActionCreator, actionCreatorFactory } from 'typescript-fsa';
 
 interface ActionCreators<TRequest, TNext, TError> {
-  requested: ActionCreator<TRequest>;
+  request: ActionCreator<TRequest>;
   cancel: ActionCreator<void>;
   started: ActionCreator<void>;
   next: ActionCreator<TNext>;
@@ -70,7 +70,7 @@ export function createService<TRequest, TNext, TError, TState = object>(
   const namespacedAction = actionCreatorFactory(actionNamespace);
 
   const ACs: ActionCreators<TRequest, TNext, TError> = {
-    requested: namespacedAction<TRequest>('requested'),
+    request: namespacedAction<TRequest>('request'),
     cancel: namespacedAction<void>('cancel'),
     started: namespacedAction<void>('started'),
     next: namespacedAction<TNext>('next'),
@@ -103,7 +103,7 @@ export function createService<TRequest, TNext, TError, TState = object>(
 
   // The base return value
   const requestor = (req: TRequest) => {
-    const action = ACs.requested(req);
+    const action = ACs.request(req);
     bus.trigger(action);
   };
 
@@ -120,7 +120,7 @@ export function createService<TRequest, TNext, TError, TState = object>(
     )
   };
   const sub = bus[listenMode](
-    ACs.requested.match,
+    ACs.request.match,
     wrappedHandler,
     bus.observeWith({
       // @ts-ignore
@@ -147,7 +147,7 @@ export function createService<TRequest, TNext, TError, TState = object>(
       return sub;
     },
   };
-  const returnValue = Object.assign(requestor, ACs, controls, {
+  const returnValue = Object.assign(requestor, {actions: ACs}, controls, {
     isActive,
     state,
   });
