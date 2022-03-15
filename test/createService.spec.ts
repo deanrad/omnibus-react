@@ -161,8 +161,8 @@ describe('createService', () => {
         'canceled',
       ].forEach((subType) => {
         it(`has property ${subType}`, () => {
-          expect(testService).toHaveProperty(subType);
-          expect(testService[subType]()).toMatchObject({
+          expect(testService.actions).toHaveProperty(subType);
+          expect(testService.actions[subType]()).toMatchObject({
             type: `${testNamespace}/${subType}`,
           });
         });
@@ -180,7 +180,7 @@ describe('createService', () => {
 
       expect(seen).toMatchObject([
         // { type: 'testService/requested', payload: '3' },
-        testService.request('3'),
+        testService.actions.request('3'),
       ]);
     });
   });
@@ -191,10 +191,10 @@ describe('createService', () => {
     );
     testService('foo');
     expect(seen).toEqual([
-      testService.request('foo'),
-      testService.started(),
-      testService.next('bar'),
-      testService.complete(),
+      testService.actions.request('foo'),
+      testService.actions.started(),
+      testService.actions.next('bar'),
+      testService.actions.complete(),
     ]);
   });
   it('triggers events from Promise handlers when no error', async () => {
@@ -207,10 +207,10 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.request('foo'),
-      testService.started(),
-      testService.next('bar'),
-      testService.complete(),
+      testService.actions.request('foo'),
+      testService.actions.started(),
+      testService.actions.next('bar'),
+      testService.actions.complete(),
     ]);
   });
 
@@ -226,10 +226,10 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.request('foo'),
-      testService.started(),
-      testService.next('bar'),
-      testService.complete(),
+      testService.actions.request('foo'),
+      testService.actions.started(),
+      testService.actions.next('bar'),
+      testService.actions.complete(),
     ]);
   });
 
@@ -242,9 +242,9 @@ describe('createService', () => {
     );
     testService('foo');
     expect(seen).toEqual([
-      testService.request('foo'),
-      testService.started(),
-      testService.error(new Error('dang!')),
+      testService.actions.request('foo'),
+      testService.actions.started(),
+      testService.actions.error(new Error('dang!')),
     ]);
   });
 
@@ -263,10 +263,10 @@ describe('createService', () => {
     await Promise.resolve();
 
     expect(seen).toEqual([
-      testService.request('foo'),
-      testService.started(),
-      testService.next('bar'),
-      testService.complete(),
+      testService.actions.request('foo'),
+      testService.actions.started(),
+      testService.actions.next('bar'),
+      testService.actions.complete(),
     ]);
   });
 
