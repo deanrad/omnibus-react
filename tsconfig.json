@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "target": "es2018",
     "module": "esnext",
     "moduleResolution": "node",
@@ -24,7 +25,7 @@
   },
   "include": [
     "./src/**/*.ts"
-, "test/utils.spec.ts", "test/bus.spec.ts", "test/3rd-party.spec.ts"  ],
+, "test/utils.spec.ts", "test/bus.spec.ts", "test/3rd-party.spec.ts", "src/unmounter.tsx"  ],
   "exclude": [
     "./src/**/*.spec.ts",
     "dist"
