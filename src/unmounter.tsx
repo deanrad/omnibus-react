@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import * as React from "react";
 
+// @ts-ignore
 export const Unmounter = ({ above = false, children }) => {
-  const [mounted, setMounted] = useState(true);
+  const [mounted, setMounted] = React.useState(true);
   const content = [
     children,
     <p>

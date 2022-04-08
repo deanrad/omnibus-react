@@ -15,14 +15,15 @@ export function useWhileMounted(
 ) {
   useEffect(() => {
     const source = sourceFactory();
-    const teardown = (source as Observable<any>).subscribe
+    const teardown = (source as Observable<any>)?.subscribe
       ? (source as Observable<any>).subscribe()
-      : source;
+      : source || new Subscription();
+
     return (teardown as Subscription)?.unsubscribe
       ? () => (teardown as Subscription).unsubscribe()
       : () => {
-        (teardown as () => void)?.();
-      };
+          (teardown as () => void)?.();
+        };
   }, []);
 }
 

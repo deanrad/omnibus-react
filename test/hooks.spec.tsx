@@ -55,6 +55,31 @@ describe('useWhileMounted', () => {
         expect(count).toEqual(0)
       })
     })
+    describe('with no teardown', () => {
+      let count = 0
+      const Example = () => {
+        useWhileMounted(() => {
+          count++
+        })
+        return null
+      }
+      beforeEach(() => {count = 0})
+  
+      describe('at mount time', () => {
+        it('calls the factory', () => {
+          const result = render(<Example />)
+          expect(count).toEqual(1)
+        })
+      })
+      describe('at unmount time', () => {
+        it('doesnt err', () => {
+          const { unmount } = render(<Example />)
+          expect(count).toEqual(1)
+          unmount()
+        })
+      })
+    })
+  
   })
   describe('called with an Observable', () => {
     let count = 0
