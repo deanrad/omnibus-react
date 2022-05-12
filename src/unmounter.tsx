@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 // @ts-ignore
 export const Unmounter = ({ above = false, children }) => {
@@ -6,16 +6,19 @@ export const Unmounter = ({ above = false, children }) => {
   const content = [
     children,
     <p>
-      <button data-testid="unmounter-button" onClick={() => setMounted((m) => !m)}>
-        {mounted ? "Unmount" : "Remount"}
+      <button
+        data-testid="unmounter-button"
+        onClick={() => setMounted((m) => !m)}
+      >
+        {mounted ? 'Unmount' : 'Remount'}
       </button>
-    </p>
-  ]
-  above && content.reverse()
+    </p>,
+  ];
+  above && content.reverse();
   return (
     <div>
-      {mounted && content }
-      {!mounted && "Unmounted!"}
+      {mounted && content}
+      {!mounted && 'Unmounted!'}
     </div>
   );
 };
