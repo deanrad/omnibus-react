@@ -1,6 +1,4 @@
-import * as React from 'react';
-import { useEffect } from 'react';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { useWhileMounted } from './useWhileMounted';
 
@@ -9,7 +7,7 @@ import { useWhileMounted } from './useWhileMounted';
  * @param service The service to subscribe to
  * @param setter The function which sets the new state on chnges
  */
- export function useServiceState<T>(
+export function useServiceState<T>(
   service: { state: Observable<T> },
   setter: (newState: T) => void
 ) {
