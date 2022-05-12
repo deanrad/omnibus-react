@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useWhileMounted, useServiceState } from '../src/hooks';
+import { useWhileMounted,  } from '../src/useWhileMounted';
 import { Observable, Subscription } from 'rxjs';
 
 describe('useWhileMounted', () => {
@@ -148,14 +148,3 @@ describe('useWhileMounted', () => {
   });
 });
 
-describe('useServiceState', () => {
-  it.todo(
-    'calls the setter provided when the service emits a new state (even if the same as the old)'
-  );
-});
-
-describe('useDistinctServiceState', () => {
-  it.todo(
-    'calls the setter provided when the service emits a new state distinct from the old'
-  );
-});

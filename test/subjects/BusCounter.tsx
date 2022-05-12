@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBus } from '../../src/useBus';
-import { useWhileMounted } from '../../src/hooks';
+import { useWhileMounted } from '../../src/useWhileMounted';
 
 export const CounterBus = ({ id = 'counter' }) => {
   const [count, setCount] = useState(0);
