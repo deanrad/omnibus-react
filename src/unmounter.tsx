@@ -5,7 +5,7 @@ export const Unmounter = ({ above = false, buttonClasses = '', children }) => {
   const [mounted, setMounted] = React.useState(true);
   const content = [
     children,
-    <p>
+    <p key="_or_unmounter">
       <button
         data-testid="unmounter-button"
         onClick={() => setMounted((m) => !m)}
@@ -19,7 +19,7 @@ export const Unmounter = ({ above = false, buttonClasses = '', children }) => {
     <div>
       {mounted && content}
       {!mounted && (
-        <p>
+        <p key="_or_remounter">
           Unmounted!{' '}
           <span>
             <button className={buttonClasses} onClick={() => setMounted(true)}>
