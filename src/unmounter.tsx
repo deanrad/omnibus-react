@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // @ts-ignore
-export const Unmounter = ({ above = false, children }) => {
+export const Unmounter = ({ above = false, buttonClasses = '', children }) => {
   const [mounted, setMounted] = React.useState(true);
   const content = [
     children,
@@ -18,7 +18,16 @@ export const Unmounter = ({ above = false, children }) => {
   return (
     <div>
       {mounted && content}
-      {!mounted && 'Unmounted!'}
+      {!mounted && (
+        <p>
+          Unmounted!{' '}
+          <span>
+            <button className={buttonClasses} onClick={() => setMounted(true)}>
+              Remount
+            </button>
+          </span>
+        </p>
+      )}
     </div>
   );
 };
