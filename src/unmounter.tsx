@@ -4,7 +4,7 @@ import * as React from 'react';
 export const Unmounter = ({ above = false, buttonClasses = '', children }) => {
   const [mounted, setMounted] = React.useState(true);
   const content = [
-    children,
+    <p key="_or_unmountable">{children}</p>,
     <p key="_or_unmounter">
       <button
         data-testid="unmounter-button"

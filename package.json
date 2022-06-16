@@ -1,6 +1,6 @@
 {
   "name": "omnibus-react",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "license": "MIT",
   "author": "Dean Radcliffe",
   "repository": "https://github.com/deanrad/omnibus-react",
@@ -41,7 +41,7 @@
     "plugins": []
   },
   "dependencies": {
-    "omnibus-rxjs": ">=0.9.7",
+    "omnibus-rxjs": ">=1.1.0",
     "tslib": "^2.3.1",
     "typescript-fsa": "^3.0.0"
   },
