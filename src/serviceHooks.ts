@@ -12,11 +12,12 @@ export function useServiceState<T>(
   setter: (newState: T) => void
 ) {
   useWhileMounted(() =>
-    service.state.subscribe({
+    {const sub = service.state.subscribe({
       next(newState) {
         setter(newState);
       },
     })
+  const x = sub.add()}
   );
 }
 
