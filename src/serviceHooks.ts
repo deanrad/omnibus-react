@@ -1,41 +1,42 @@
-import { Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { useState } from 'react';
+import { BehaviorSubject } from 'rxjs';
 import { useWhileMounted } from './useWhileMounted';
+import { Service } from 'omnibus-rxjs';
 
-/** Calls the function given on each new state of the service. Does not dedupe states!
- * Unsubscribes on unmount. Only pass a setter that is stable!
+/** Maintains a React state field populated from service.state
+ * Doesn't update state after unmount.
  * @param service The service to subscribe to
- * @param setter The function which sets the new state on chnges
  */
-export function useServiceState<T>(
-  service: { state: Observable<T> },
-  setter: (newState: T) => void
+export function useServiceState<TState>(
+  service: Service<any, unknown, unknown, TState>
 ) {
+  const [state, setter] = useState(service.state.value);
+
   useWhileMounted(() =>
-    {const sub = service.state.subscribe({
+    service.state.subscribe({
       next(newState) {
         setter(newState);
       },
     })
-  const x = sub.add()}
   );
+
+  return state;
 }
 
-/** Calls the function given on each new state of the service, deduping with optional comparator.
- * Unsubscribes on unmount. Only pass a setter that is stable!
+/** Maintains a React state field populated from service.isActive
+ * Doesn't update state after unmount.
  * @param service The service to subscribe to
- * @param setter The function which sets the new state on chnges
  */
-export function useDistinctServiceState<T>(
-  service: { state: Observable<T> },
-  setter: (newState: T) => void,
-  comparator?: (previous: T, current: T) => boolean
-) {
+export function useServiceActivity(service: Service<any, any, any, any>) {
+  const [activity, setActivity] = useState(service.isActive.value);
+
   useWhileMounted(() =>
-    service.state.pipe(distinctUntilChanged(comparator)).subscribe({
-      next(newState) {
-        setter(newState);
+    service.isActive.subscribe({
+      next(newActivity) {
+        setActivity(newActivity);
       },
     })
   );
+
+  return activity;
 }
